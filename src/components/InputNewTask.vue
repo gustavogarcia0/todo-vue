@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <input v-model="name" @keydown.enter="emitTaskToApp"  type="text" name="inputText">
-    <button @click="emitTaskToApp">+</button>
+  <div class="new-task">
+    <input v-model="name" @keydown.enter="emitTaskToApp"  type="text" name="inputText" class="form-element" placeholder="Nova tarefa">
+    <button class="form-element" @click="emitTaskToApp">+</button>
   </div>
 </template>
 
@@ -14,12 +14,39 @@ export default {
   },
   methods: {
     emitTaskToApp() {
-      this.$emit("taskAdded", { name: this.name });
-      this.name = "";
+      if (this.name !== "") {
+        this.$emit("taskAdded", { name: this.name });
+        this.name = "";
+      }
     },
   },
 };
 </script>
 
-<style>
+<style scoped>
+.new-task {
+  margin: 35px;
+}
+
+.form-element {
+  outline: none;
+  font-size: 2rem;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 5px 10px 8px;
+}
+
+input.form-element {
+  width: 500px;
+  background: #fff2;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+button.form-element {
+  border-left: none;
+  background: #2196f3;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
 </style>

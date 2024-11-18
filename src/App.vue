@@ -2,24 +2,48 @@
 	<div id="app">
     <PopUp v-if="showPop" :title="AlertContent" @close="hidePopUp"/>
 		<h1>Tarefas</h1>
+    <ProgressBar :progress="progress"></ProgressBar>
     <InputNewTask @taskAdded="addTask"/>
-		<TaskGridVue :tasks="tasks"/>
+		<TaskGridVue :tasks="tasks" @taskDeleted="deleteTask"/>
 	</div>
 </template>
 
 <script>
 import InputNewTask from "./components/InputNewTask.vue";
 import PopUp from "./components/PopUp.vue";
+import ProgressBar from "./components/progressBar.vue";
 import TaskGridVue from "./components/TaskGrid.vue";
 
 export default {
-  components: { TaskGridVue, InputNewTask, PopUp },
+  components: { TaskGridVue, InputNewTask, PopUp, ProgressBar },
   data() {
     return {
       showPop: false,
       AlertContent: "",
-      tasks: [{ name: "Lavar roupa", pending: true }, { name: "Estudar", pending: false }],
+      tasks: [],
     };
+  },
+  computed: {
+    progress() {
+      const total = this.tasks.length;
+      const done = this.tasks.filter((t) => !t.pending).length;
+      return Math.round((done / total) * 100) || 0;
+    },
+  },
+
+  watch: {
+    tasks: {
+      handler() {
+        localStorage.setItem("tasks", JSON.stringify(this.tasks));
+      },
+      deep: true,
+    },
+  },
+
+  created() {
+    const storage = localStorage.getItem("tasks");
+    const array = JSON.parse(storage);
+    this.tasks = Array.isArray(array) ? array : [];
   },
 
   methods: {
@@ -46,6 +70,10 @@ export default {
         this.timerPopUp();
         this.AlertContent = "Tareja duplicada";
       }
+    },
+
+    deleteTask(i) {
+      this.tasks.splice(i, 1);
     },
   },
 };

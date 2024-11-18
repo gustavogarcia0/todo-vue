@@ -21,6 +21,7 @@ export default {
 </script>
 <style  scoped>
 .pop-up {
+  z-index: 100;
   cursor: pointer;
   position: fixed;
   color: black;
